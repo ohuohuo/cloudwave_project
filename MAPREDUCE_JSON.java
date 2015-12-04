@@ -93,18 +93,11 @@ public static void getSegment(String Reduce_key, Connection conn){
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-          //JSONObject STUDY_json = new JSONObject();
-		
 		num_segments = Math.ceil((dDR*nDR)/30);
 		//return num_segments;
-		
 	}
 
 	public static class JSONMap extends MapReduceBase implements Mapper<Text, BytesWritable, TextInt, Text>{
-		
-		
-		//Text OUTvalue = new Text();
-		//IntWritable filename_num=new IntWritable();
 		  public static int[] byteArrayToInt(byte[] bytes) {  //This function is to convert byte array into an int array
 		        // for (int b=0; b<barr.length; b++) { System.out.printf("%X ",barr[b]); }
 			  	
@@ -133,18 +126,10 @@ public static void getSegment(String Reduce_key, Connection conn){
 		                jsonarray.put(intarray[i]); }}catch(Exception e){
 		                    e.printStackTrace();
 		                }
-		    
-		        
-		        //JSONObject jdata = new JSONObject();
-		        //try {
-		        //    jdata.put(filename, jsonarray);
-		        //} catch (JSONException e1) {
-		        //    e1.printStackTrace();
-		        //}
-		        //System.out.println(jdata);              //print this json out
+		            //print this json out
 		        return jsonarray;
 		    }
-		  
+		  //generate time from raw data
 		  protected static String readTime(int time){
 		    	int sec = time * 30;
 	            int min = 0;
@@ -167,15 +152,6 @@ public static void getSegment(String Reduce_key, Connection conn){
 	            DecimalFormat hourFor = new DecimalFormat("00");
 	            String hourStr = new String(hourFor.format(hour));
 	            String timeStr = new String(hourStr+":"+minStr+":"+secStr);
-	            
-	            
-	            //JSONObject jsonTime = new JSONObject();
-	            //try {
-				//	jsonTime.put("segment_start_time", timeStr);
-				//} catch (JSONException e) {
-				//	e.printStackTrace();
-				//}
-				
 	            return timeStr;
 		    }
 		
@@ -184,30 +160,15 @@ public static void getSegment(String Reduce_key, Connection conn){
 				Reporter reporter) throws IOException {
 			
 			System.out.println(key.toString());
-			//double num_segments;
-			//num_segments = Test(String Reduce_key);
-			//num_segments = Test("FP10");
-			
-			
 			//below is the code to output the intermediate data
-			/* 
-			File writename = new File("JSON/output/output"+key.toString()+".txt");
-			writename.createNewFile();   
-            BufferedWriter out = new BufferedWriter(new FileWriter(writename)); 
-            */
-            
-            getSegment(key.toString(),conn);
-        	 
+            		getSegment(key.toString(),conn);
 			System.out.println(key.toString());
 			// add content
-            //Text word = new Text();
-        	//how many bytes are there in the value
+        		//how many bytes are there in the value
         	System.out.println("map invoked");
-        	
-        	
+
         	System.out.println(num_segments);
-        	
-        	
+
         	TextInt tx=new TextInt();
 			Text Textvalue = new Text();
         	
@@ -218,8 +179,6 @@ public static void getSegment(String Reduce_key, Connection conn){
             int lengthOfRemain;//length of remainings 
            
             intArray = byteArrayToInt(value.copyBytes());
-            //System.out.println("this is int array"+intArray[0]+intArray[1]+intArray[2]+intArray[3]);
-            //int num_segments = Math.ceil((dDR*nDR)/30);num_segments is the number of segments
             
             lengthOfSegment = (int)Math.floor(size/num_segments);
             lengthOfRemain = (int)(size - lengthOfSegment*num_segments);
@@ -239,13 +198,7 @@ public static void getSegment(String Reduce_key, Connection conn){
 					tx.setFirstKey(key.toString());
 					tx.setSecondKey(i);
 					//System.out.println(key.toString()+i+","+jsonDataPoint.toString());
-					
-					
 					//below is the code to output the intermediate data
-				    /*
-		            out.write(key.toString()+"-"+i+","+jsonDataPoint.toString());
-		            out.flush();   
-		            */
 					
 					output.collect(tx, new Text(jsonDataPoint.toString()));
             	    
@@ -284,23 +237,6 @@ public static void getSegment(String Reduce_key, Connection conn){
 					e.printStackTrace();
 				}
             }
-            
-          //below is the code to output the intermediate data
-            /*
-            out.close();
-            */
-            
-            //json = jsonArrayTest(intArray);
-            //jsonStartTime.put("segment_start_time", readTime(num_split));
-            //jsonData.put("data", jsonArrayTest(intArray));
-            //try {
-			//	jsonDataPoint.put("segment_start_time", readTime(epochNum)).put("data", jsonArrayTest(epoch));
-			//} catch (JSONException e) {
-			//	e.printStackTrace();
-			//}
-            
-            //jsonDataPoint.toString();
-            //context.write(key, new Text(jsonDataPoint.toString()));*/
         }
 	
 	}
@@ -312,8 +248,6 @@ public static void getSegment(String Reduce_key, Connection conn){
 				OutputCollector<Text, Text> output, Reporter reporter)
 				throws IOException {
 			
-			//File JSONFile = new File("/home/axw303/output.json");     
-			
 			JSONObject Final_JSON = new JSONObject();
 			JSONObject Segment_num = new JSONObject();
 			//Final_JSON = DBHEADER(key.firstKey);
@@ -321,14 +255,7 @@ public static void getSegment(String Reduce_key, Connection conn){
 					
 			Text Textkey = new Text();
 			Text Textvalue = new Text();
-			// TODO Auto-generated method stub
-			//String V = key.toString();
-			//String[] V_Signal_Ch_Sement = V.split("_");
-			//System.out.println("S:"+V_Signal_Ch_Sement[0]+"C:"+V_Signal_Ch_Sement[1]+"S:"+V_Signal_Ch_Sement[2] );
-            
-			/*while (values.hasNext()){
-				Final_JSON = Final_JSON+values.next().toString();
-			}*/
+
 			JSONObject signal= new JSONObject();
 			try {
 				signal = Final_JSON.getJSONObject("signal");
@@ -352,22 +279,8 @@ public static void getSegment(String Reduce_key, Connection conn){
 			}
 			
 			while (values.hasNext()){
-				//String value = values.next().toString();
-				/*try {
-					Segment_num.put("Segment", key.getSecondKey());
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}*/
 				data_points.put(values.next().toString());
 			}
-				
-			/*JSONFile.createNewFile(); 
-			BufferedWriter out = new BufferedWriter(new FileWriter(JSONFile));  
-			out.write(Final_JSON.toString());   
-			out.flush();
-			out.close();  */
-			
 			Textvalue.set(Final_JSON.toString());
 			Textkey.set("");
 			output.collect(Textkey, Textvalue);
@@ -439,7 +352,7 @@ public static void getSegment(String Reduce_key, Connection conn){
 	        TextInt ti1=(TextInt)b;
 	        TextInt ti2=(TextInt)a;
 
-	        //首先要保证是同一个组内，同一个组的标识就是第一个字段相同
+	        //gurantte that they must be in one group, the flag is that the 1st field should be the same
 	        if(!ti1.getFirstKey().equals(ti2.getFirstKey()))
 	           return ti1.getFirstKey().compareTo(ti2.getFirstKey());
 	        else
