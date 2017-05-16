@@ -1,4 +1,4 @@
-##CloudWave Project
+## CloudWave Project
 These are the source code that processed the large binary signal data (up to 11TB) using Hadoop MapReduce model and read header information from MySQL.
 
 .java Files
